@@ -1,0 +1,20 @@
+entrypoints Program;
+Prg.   Program   ::= [ Decl ] ;
+
+Exec.  Decl      ::= "executable" Action "if" [ Literal ] ;
+Caus.  Decl      ::= Action "causes" [ Literal ] ;
+CausCond.  Decl  ::= Action "causes" [ Literal ] "if" [ Literal ];
+Init.  Decl      ::= "initially" Literal ;
+
+Preds. Predicate ::= Ident "(" [ Ident ] ")" ;
+Pred.  Predicate ::= Ident ;
+
+LitN.  Literal   ::= "neg" Predicate ;
+Lit.   Literal   ::= Predicate ;
+
+Acts.  Action    ::= Ident "(" [ Ident ] ")" ;
+Act.   Action    ::= Ident ;
+
+separator  nonempty Literal ",";
+separator  nonempty Ident ",";
+terminator nonempty Decl ".";

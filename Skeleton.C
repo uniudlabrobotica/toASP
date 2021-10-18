@@ -1,0 +1,163 @@
+/*** BNFC-Generated Visitor Design Pattern Skeleton. ***/
+/* This implements the common visitor design pattern.
+   Note that this method uses Visitor-traversal of lists, so
+   List->accept() does NOT traverse the list. This allows different
+   algorithms to use context information differently. */
+
+#include "Skeleton.H"
+
+
+
+void Skeleton::visitProgram(Program* t) {} //abstract class
+void Skeleton::visitDecl(Decl* t) {} //abstract class
+void Skeleton::visitPredicate(Predicate* t) {} //abstract class
+void Skeleton::visitLiteral(Literal* t) {} //abstract class
+void Skeleton::visitAction(Action* t) {} //abstract class
+
+void Skeleton::visitPrg(Prg *prg)
+{
+  /* Code For Prg Goes Here */
+
+  prg->listdecl_->accept(this);
+
+}
+
+void Skeleton::visitExec(Exec *exec)
+{
+  /* Code For Exec Goes Here */
+
+  exec->action_->accept(this);
+  exec->listliteral_->accept(this);
+
+}
+
+void Skeleton::visitCaus(Caus *caus)
+{
+  /* Code For Caus Goes Here */
+
+  caus->action_->accept(this);
+  caus->listliteral_->accept(this);
+
+}
+
+void Skeleton::visitCausCond(CausCond *causcond)
+{
+  /* Code For CausCond Goes Here */
+
+  causcond->action_->accept(this);
+  causcond->listliteral_1->accept(this);
+  causcond->listliteral_2->accept(this);
+
+}
+
+void Skeleton::visitInit(Init *init)
+{
+  /* Code For Init Goes Here */
+
+  init->literal_->accept(this);
+
+}
+
+void Skeleton::visitPreds(Preds *preds)
+{
+  /* Code For Preds Goes Here */
+
+  visitIdent(preds->ident_);
+  preds->listident_->accept(this);
+
+}
+
+void Skeleton::visitPred(Pred *pred)
+{
+  /* Code For Pred Goes Here */
+
+  visitIdent(pred->ident_);
+
+}
+
+void Skeleton::visitLitN(LitN *litn)
+{
+  /* Code For LitN Goes Here */
+
+  litn->predicate_->accept(this);
+
+}
+
+void Skeleton::visitLit(Lit *lit)
+{
+  /* Code For Lit Goes Here */
+
+  lit->predicate_->accept(this);
+
+}
+
+void Skeleton::visitActs(Acts *acts)
+{
+  /* Code For Acts Goes Here */
+
+  visitIdent(acts->ident_);
+  acts->listident_->accept(this);
+
+}
+
+void Skeleton::visitAct(Act *act)
+{
+  /* Code For Act Goes Here */
+
+  visitIdent(act->ident_);
+
+}
+
+
+void Skeleton::visitListLiteral(ListLiteral* listliteral)
+{
+  for (ListLiteral::iterator i = listliteral->begin() ; i != listliteral->end() ; ++i)
+  {
+    (*i)->accept(this);
+  }
+}
+
+void Skeleton::visitListIdent(ListIdent* listident)
+{
+  for (ListIdent::iterator i = listident->begin() ; i != listident->end() ; ++i)
+  {
+    visitIdent(*i) ;
+  }
+}
+
+void Skeleton::visitListDecl(ListDecl* listdecl)
+{
+  for (ListDecl::iterator i = listdecl->begin() ; i != listdecl->end() ; ++i)
+  {
+    (*i)->accept(this);
+  }
+}
+
+
+void Skeleton::visitInteger(Integer x)
+{
+  /* Code for Integer Goes Here */
+}
+
+void Skeleton::visitChar(Char x)
+{
+  /* Code for Char Goes Here */
+}
+
+void Skeleton::visitDouble(Double x)
+{
+  /* Code for Double Goes Here */
+}
+
+void Skeleton::visitString(String x)
+{
+  /* Code for String Goes Here */
+}
+
+void Skeleton::visitIdent(Ident x)
+{
+  /* Code for Ident Goes Here */
+}
+
+
+
