@@ -22,6 +22,15 @@ void Skeleton::visitPrg(Prg *prg)
 
 }
 
+void Skeleton::visitDef(Def *def)
+{
+  /* Code For Def Goes Here */
+
+  visitIdent(def->ident_1);
+  visitIdent(def->ident_2);
+
+}
+
 void Skeleton::visitExec(Exec *exec)
 {
   /* Code For Exec Goes Here */
@@ -55,6 +64,14 @@ void Skeleton::visitInit(Init *init)
   /* Code For Init Goes Here */
 
   init->literal_->accept(this);
+
+}
+
+void Skeleton::visitFinal(Final *final)
+{
+  /* Code For Final Goes Here */
+
+  final->literal_->accept(this);
 
 }
 

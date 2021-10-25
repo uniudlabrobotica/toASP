@@ -32,8 +32,10 @@ IDENT [a-zA-Z0-9'_]
 <YYINITIAL>"."      	 return _SYMB_3;
 <YYINITIAL>"causes"      	 return _SYMB_4;
 <YYINITIAL>"executable"      	 return _SYMB_5;
-<YYINITIAL>"if"      	 return _SYMB_6;
-<YYINITIAL>"initially"      	 return _SYMB_7;
+<YYINITIAL>"finally"      	 return _SYMB_6;
+<YYINITIAL>"if"      	 return _SYMB_7;
+<YYINITIAL>"initially"      	 return _SYMB_8;
+<YYINITIAL>"neg"      	 return _SYMB_9;
 
 <YYINITIAL>{LETTER}{IDENT}*      	 yylval.string_ = strdup(yytext); return _IDENT_;
 \n  ++yy_mylinenumber ;

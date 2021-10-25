@@ -1,10 +1,12 @@
 entrypoints Program;
 Prg.   Program   ::= [ Decl ] ;
 
+Def.   Decl      ::= Ident  "of" "type" Ident ;
 Exec.  Decl      ::= "executable" Action "if" [ Literal ] ;
 Caus.  Decl      ::= Action "causes" [ Literal ] ;
 CausCond.  Decl  ::= Action "causes" [ Literal ] "if" [ Literal ];
 Init.  Decl      ::= "initially" Literal ;
+Final. Decl      ::= "finally" Literal ;
 
 Preds. Predicate ::= Ident "(" [ Ident ] ")" ;
 Pred.  Predicate ::= Ident ;
@@ -18,3 +20,4 @@ Act.   Action    ::= Ident ;
 separator  nonempty Literal ",";
 separator  nonempty Ident ",";
 terminator nonempty Decl ".";
+comment "%" ;

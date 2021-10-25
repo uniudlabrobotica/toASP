@@ -1,0 +1,1 @@
+occurs(pick(a,2,1),1) occurs(put(a,1,3),2) occurs(pick(c,1,2),3) occurs(put(c,2,1),4) occurs(pick(a,1,3),5) occurs(noop,6) occurs(noop,7) occurs(noop,8) occurs(put(a,3,1),9)

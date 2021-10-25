@@ -49,6 +49,52 @@ Prg *Prg::clone() const
 
 
 
+/********************   Def    ********************/
+Def::Def(Ident p1, Ident p2)
+{
+  ident_1 = p1;
+  ident_2 = p2;
+
+}
+
+Def::Def(const Def & other)
+{
+  ident_1 = other.ident_1;
+  ident_2 = other.ident_2;
+
+}
+
+Def &Def::operator=(const Def & other)
+{
+  Def tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void Def::swap(Def & other)
+{
+  std::swap(ident_1, other.ident_1);
+  std::swap(ident_2, other.ident_2);
+
+}
+
+Def::~Def()
+{
+
+}
+
+void Def::accept(Visitor *v)
+{
+  v->visitDef(this);
+}
+
+Def *Def::clone() const
+{
+  return new Def(*this);
+}
+
+
+
 /********************   Exec    ********************/
 Exec::Exec(Action *p1, ListLiteral *p2)
 {
@@ -237,6 +283,50 @@ void Init::accept(Visitor *v)
 Init *Init::clone() const
 {
   return new Init(*this);
+}
+
+
+
+/********************   Final    ********************/
+Final::Final(Literal *p1)
+{
+  literal_ = p1;
+
+}
+
+Final::Final(const Final & other)
+{
+  literal_ = other.literal_->clone();
+
+}
+
+Final &Final::operator=(const Final & other)
+{
+  Final tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void Final::swap(Final & other)
+{
+  std::swap(literal_, other.literal_);
+
+}
+
+Final::~Final()
+{
+  delete(literal_);
+
+}
+
+void Final::accept(Visitor *v)
+{
+  v->visitFinal(this);
+}
+
+Final *Final::clone() const
+{
+  return new Final(*this);
 }
 
 

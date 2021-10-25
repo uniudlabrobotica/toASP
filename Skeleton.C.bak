@@ -11,6 +11,8 @@
 void Skeleton::visitProgram(Program* t) {} //abstract class
 void Skeleton::visitDecl(Decl* t) {} //abstract class
 void Skeleton::visitPredicate(Predicate* t) {} //abstract class
+void Skeleton::visitLiteral(Literal* t) {} //abstract class
+void Skeleton::visitAction(Action* t) {} //abstract class
 
 void Skeleton::visitPrg(Prg *prg)
 {
@@ -24,8 +26,8 @@ void Skeleton::visitExec(Exec *exec)
 {
   /* Code For Exec Goes Here */
 
-  exec->predicate_->accept(this);
-  exec->listpredicate_->accept(this);
+  exec->action_->accept(this);
+  exec->listliteral_->accept(this);
 
 }
 
@@ -33,8 +35,18 @@ void Skeleton::visitCaus(Caus *caus)
 {
   /* Code For Caus Goes Here */
 
-  caus->predicate_->accept(this);
-  caus->listpredicate_->accept(this);
+  caus->action_->accept(this);
+  caus->listliteral_->accept(this);
+
+}
+
+void Skeleton::visitCausCond(CausCond *causcond)
+{
+  /* Code For CausCond Goes Here */
+
+  causcond->action_->accept(this);
+  causcond->listliteral_1->accept(this);
+  causcond->listliteral_2->accept(this);
 
 }
 
@@ -42,7 +54,15 @@ void Skeleton::visitInit(Init *init)
 {
   /* Code For Init Goes Here */
 
-  init->predicate_->accept(this);
+  init->literal_->accept(this);
+
+}
+
+void Skeleton::visitFinal(Final *final)
+{
+  /* Code For Final Goes Here */
+
+  final->literal_->accept(this);
 
 }
 
@@ -63,10 +83,43 @@ void Skeleton::visitPred(Pred *pred)
 
 }
 
-
-void Skeleton::visitListPredicate(ListPredicate* listpredicate)
+void Skeleton::visitLitN(LitN *litn)
 {
-  for (ListPredicate::iterator i = listpredicate->begin() ; i != listpredicate->end() ; ++i)
+  /* Code For LitN Goes Here */
+
+  litn->predicate_->accept(this);
+
+}
+
+void Skeleton::visitLit(Lit *lit)
+{
+  /* Code For Lit Goes Here */
+
+  lit->predicate_->accept(this);
+
+}
+
+void Skeleton::visitActs(Acts *acts)
+{
+  /* Code For Acts Goes Here */
+
+  visitIdent(acts->ident_);
+  acts->listident_->accept(this);
+
+}
+
+void Skeleton::visitAct(Act *act)
+{
+  /* Code For Act Goes Here */
+
+  visitIdent(act->ident_);
+
+}
+
+
+void Skeleton::visitListLiteral(ListLiteral* listliteral)
+{
+  for (ListLiteral::iterator i = listliteral->begin() ; i != listliteral->end() ; ++i)
   {
     (*i)->accept(this);
   }

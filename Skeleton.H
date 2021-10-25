@@ -14,10 +14,12 @@ public:
   void visitLiteral(Literal* p);
   void visitAction(Action* p);
   void visitPrg(Prg* p);
+  void visitDef(Def* p);
   void visitExec(Exec* p);
   void visitCaus(Caus* p);
   void visitCausCond(CausCond* p);
   void visitInit(Init* p);
+  void visitFinal(Final* p);
   void visitPreds(Preds* p);
   void visitPred(Pred* p);
   void visitLitN(LitN* p);

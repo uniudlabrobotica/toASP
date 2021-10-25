@@ -1,0 +1,25 @@
+X of type block.
+Y of type block.
+H of type h.
+W of type place.
+
+initially free_gripper.
+initially on(a,b).
+initially top(a,1).
+initially top(c,2).
+initially hight(1,2).
+initially hight(2,1).
+initially hight(3,0).
+
+executable pick(X,H,W) if top(X,W), hight(W,H), free_gripper.
+executable put(X,H,W) if gripped(X), hight(W,H-1), neg free_gripper.
+
+pick(X,H,W) causes gripped(X), neg hight(W, H), hight(W, H-1), neg free_gripper, neg top(X,W).
+pick(X,H,W) causes top(Y,W), neg on(X,Y) if on(X,Y).
+
+put(X,H,W) causes neg top(Y,W), on(X,Y) if top (Y,W).
+put(X,H,W) causes top(X,W), neg hight(W,H-1), hight(W,H), free_gripper, neg gripped(X).
+
+finally on(a,c).
+finally on(c,b).
+

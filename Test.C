@@ -5,6 +5,7 @@
 /*                                                                          */
 /****************************************************************************/
 #include <stdio.h>
+#include <stdlib.h>
 #include "Parser.H"
 #include "Printer.H"
 #include "Absyn.H"
@@ -36,7 +37,7 @@ int main(int argc, char ** argv)
     FluentVisitor *f = new FluentVisitor();
     f->print(parse_tree);
     f->~FluentVisitor();
-
+    system("./cleanFile.sh");
     return 0;
   }
   return 1;

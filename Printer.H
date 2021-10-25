@@ -7,6 +7,11 @@
 #include <stdlib.h>
 #include <iostream>
 #include <fstream>
+#include <typeinfo>
+#include <string>
+#include <regex>
+#include <map>
+
 
 
 /* Certain applications may improve performance by changing the buffer size */
@@ -15,10 +20,48 @@
 #define _L_PAREN '('
 #define _R_PAREN ')'
 
-class PrintAbsyn : public Visitor
+
+class FluentVisitor : public Visitor
 {
  private:
+  std::ofstream myfile;
+  static std::map<std::string, std::string> vars_predicates;
 
+ public:
+
+  FluentVisitor(void);
+  ~FluentVisitor(void);
+  void print(Visitable* v);
+  void visitProgram(Program *p); /* abstract class */
+  void visitPrg(Prg *p);
+  void visitDecl(Decl *p); /* abstract class */
+  void visitExec(Exec *p);
+  void visitCaus(Caus *p);
+  void visitDef(Def *p);
+  void visitCausCond(CausCond *p);
+  void visitPredicate(Predicate *p); /* abstract class */
+  void visitPreds(Preds *p);
+  void visitPred(Pred *p);
+  void visitLiteral(Literal *p); /* abstract class */
+  void visitLitN(LitN *p);
+  void visitLit(Lit *p);
+  void visitListLiteral(ListLiteral* p);
+  void visitListDecl(ListDecl* p);
+  void visitListIdent(ListIdent* p);
+  void visitIdent(String s);
+  void visitInteger(Integer){};
+  void visitAction(Action *p); /* abstract class */
+  void visitActs(Acts *p);
+  void visitAct(Act *p);
+  void visitFinal(Final *p);
+  void visitInit(Init *p);
+  void visitChar(Char x){};
+  void visitDouble(Double x){};
+  void visitString(String x){};
+};
+
+class PrintAbsyn : public Visitor
+{
  protected:
   int _n_, _i_;
   /* The following are simple heuristics for rendering terminals */
@@ -29,38 +72,19 @@ void render(char* s);
   void indent(void);
   void backup(void);
  public:
-  
   PrintAbsyn(void);
   ~PrintAbsyn(void);
   char* print(Visitable* v);
-/*
-  static int visitPrg = 0;
-  static int visitExec = 0;
-  static int visitCaus = 0;
-  static int visitCausCond = 0;
-  static int visitInit = 0;
-  static int visitPreds = 0;
-  static int visitPred = 0;
-  static int visitLitN = 0;
-  static int visitLit = 0;
-  static int visitActs = 0;
-  static int visitAct = 0;
-  static int visitListLiteral = 0;
-  static int visitListIdent = 0;
-  static int visitListDecl = 0;
-*/
-  void visitInteger(Integer i);
-  void visitDouble(Double d);
-  void visitChar(Char c);
-  void visitString(String s);
-  void visitIdent(String s);
+
   void visitProgram(Program *p); /* abstract class */
   void visitPrg(Prg *p);
   void visitDecl(Decl *p); /* abstract class */
+  void visitDef(Def *p);
   void visitExec(Exec *p);
   void visitCaus(Caus *p);
   void visitCausCond(CausCond *p);
   void visitInit(Init *p);
+  void visitFinal(Final *p);
   void visitPredicate(Predicate *p); /* abstract class */
   void visitPreds(Preds *p);
   void visitPred(Pred *p);
@@ -74,6 +98,11 @@ void render(char* s);
   void visitListIdent(ListIdent* p);
   void visitListDecl(ListDecl* p);
 
+  void visitInteger(Integer i);
+  void visitDouble(Double d);
+  void visitChar(Char c);
+  void visitString(String s);
+  void visitIdent(String s);
  protected:
   void inline bufAppend(const char* s)
   {
@@ -133,41 +162,6 @@ void render(char* s);
 };
 
 
-class FluentVisitor : public Visitor
-{
- private:
-  std::ofstream myfile;
-
- public:
-
-  FluentVisitor(void);
-  ~FluentVisitor(void);
-  void print(Visitable* v);
-  void visitProgram(Program *p); /* abstract class */
-  void visitPrg(Prg *p);
-  void visitDecl(Decl *p); /* abstract class */
-  void visitExec(Exec *p);
-  void visitCaus(Caus *p);
-  void visitCausCond(CausCond *p);
-  void visitPredicate(Predicate *p); /* abstract class */
-  void visitPreds(Preds *p);
-  void visitPred(Pred *p);
-  void visitLiteral(Literal *p); /* abstract class */
-  void visitLitN(LitN *p);
-  void visitLit(Lit *p);
-  void visitListLiteral(ListLiteral* p);
-  void visitListDecl(ListDecl* p);
-  void visitListIdent(ListIdent* p);
-  void visitIdent(String s);
-  void visitInteger(Integer){};
-  void visitAction(Action *p); /* abstract class */
-  void visitActs(Acts *p);
-  void visitAct(Act *p);
-  void visitInit(Init *p){};
-  void visitChar(Char x){};
-  void visitDouble(Double x){};
-  void visitString(String x){};
-};
 
 class ShowAbsyn : public Visitor
 {
@@ -179,10 +173,12 @@ class ShowAbsyn : public Visitor
   void visitProgram(Program *p); /* abstract class */
   void visitPrg(Prg *p);
   void visitDecl(Decl *p); /* abstract class */
+  void visitDef(Def *p);
   void visitExec(Exec *p);
   void visitCaus(Caus *p);
   void visitCausCond(CausCond *p);
   void visitInit(Init *p);
+  void visitFinal(Final *p);
   void visitPredicate(Predicate *p); /* abstract class */
   void visitPreds(Preds *p);
   void visitPred(Pred *p);

@@ -22,7 +22,7 @@ LETTER [a-zA-Z]
 CAPITAL [A-Z]
 SMALL [a-z]
 DIGIT [0-9]
-IDENT [a-zA-Z0-9'_]
+IDENT [a-zA-Z0-9'_\-+]
 %START YYINITIAL COMMENT CHAR CHARESC CHAREND STRING ESCAPED
 %%
 
@@ -32,11 +32,15 @@ IDENT [a-zA-Z0-9'_]
 <YYINITIAL>"."      	 return _SYMB_3;
 <YYINITIAL>"causes"      	 return _SYMB_4;
 <YYINITIAL>"executable"      	 return _SYMB_5;
-<YYINITIAL>"if"      	 return _SYMB_6;
-<YYINITIAL>"initially"      	 return _SYMB_7;
-<YYINITIAL>"neg"      	 return _SYMB_8;
+<YYINITIAL>"finally"      	 return _SYMB_6;
+<YYINITIAL>"if"      	 return _SYMB_7;
+<YYINITIAL>"initially"      	 return _SYMB_8;
+<YYINITIAL>"neg"      	 return _SYMB_9;
+<YYINITIAL>"of"      	 return _SYMB_10;
+<YYINITIAL>"type"      	 return _SYMB_11;
 
-<YYINITIAL>{LETTER}{IDENT}*      	 yylval.string_ = strdup(yytext); return _IDENT_;
+<YYINITIAL>"%"[^\n]*\n  ++yy_mylinenumber ; 	 /* BNFC single-line comment */;
+<YYINITIAL>{IDENT}*      	 yylval.string_ = strdup(yytext); return _IDENT_;
 \n  ++yy_mylinenumber ;
 <YYINITIAL>[ \t\r\n\f]      	 /* ignore white space. */;
 <YYINITIAL>.      	 return _ERROR_;

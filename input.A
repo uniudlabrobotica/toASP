@@ -1,0 +1,24 @@
+X of type block.
+Y of type block.
+
+executable prendi(X) if libero(X),sul_tavolo(X),mano_vuota.
+executable appoggia(X) if afferrato(X).
+executable impila(X,Y) if afferrato(X),libero(Y).
+executable prendi_da_pila(X,Y) if sopra(X,Y),libero(X),mano_vuota.
+
+prendi(X) causes neg libero(X),neg sul_tavolo(X),neg mano_vuota, afferrato(X).
+prendi(X) causes neg libero(X),neg sul_tavolo(X),neg mano_vuota, afferrato(X) if libero(X).
+appoggia(X) causes neg afferrato(X),libero(X), sul_tavolo(X), mano_vuota.
+impila(X,Y) causes neg afferrato(X),neg libero(Y ),libero(X), sopra(X,Y),mano_vuota.
+prendi_da_pila(X,Y ) causes afferrato(X),neg sopra(X,Y ),libero(Y ), neg libero(X),neg mano_vuota.
+
+initially al(b,c).
+initially libero(c).
+initially libero(a).
+initially sul_tavolo(c).
+initially sul_tavolo(b).
+initially sopra(a,b).
+initially mano_vuota.
+
+finally sopra(a,c).
+finally sopra(c,b).

@@ -50,17 +50,17 @@ Prg *Prg::clone() const
 
 
 /********************   Exec    ********************/
-Exec::Exec(Predicate *p1, ListPredicate *p2)
+Exec::Exec(Action *p1, ListLiteral *p2)
 {
-  predicate_ = p1;
-  listpredicate_ = p2;
+  action_ = p1;
+  listliteral_ = p2;
 
 }
 
 Exec::Exec(const Exec & other)
 {
-  predicate_ = other.predicate_->clone();
-  listpredicate_ = other.listpredicate_->clone();
+  action_ = other.action_->clone();
+  listliteral_ = other.listliteral_->clone();
 
 }
 
@@ -73,15 +73,15 @@ Exec &Exec::operator=(const Exec & other)
 
 void Exec::swap(Exec & other)
 {
-  std::swap(predicate_, other.predicate_);
-  std::swap(listpredicate_, other.listpredicate_);
+  std::swap(action_, other.action_);
+  std::swap(listliteral_, other.listliteral_);
 
 }
 
 Exec::~Exec()
 {
-  delete(predicate_);
-  delete(listpredicate_);
+  delete(action_);
+  delete(listliteral_);
 
 }
 
@@ -98,17 +98,17 @@ Exec *Exec::clone() const
 
 
 /********************   Caus    ********************/
-Caus::Caus(Predicate *p1, ListPredicate *p2)
+Caus::Caus(Action *p1, ListLiteral *p2)
 {
-  predicate_ = p1;
-  listpredicate_ = p2;
+  action_ = p1;
+  listliteral_ = p2;
 
 }
 
 Caus::Caus(const Caus & other)
 {
-  predicate_ = other.predicate_->clone();
-  listpredicate_ = other.listpredicate_->clone();
+  action_ = other.action_->clone();
+  listliteral_ = other.listliteral_->clone();
 
 }
 
@@ -121,15 +121,15 @@ Caus &Caus::operator=(const Caus & other)
 
 void Caus::swap(Caus & other)
 {
-  std::swap(predicate_, other.predicate_);
-  std::swap(listpredicate_, other.listpredicate_);
+  std::swap(action_, other.action_);
+  std::swap(listliteral_, other.listliteral_);
 
 }
 
 Caus::~Caus()
 {
-  delete(predicate_);
-  delete(listpredicate_);
+  delete(action_);
+  delete(listliteral_);
 
 }
 
@@ -145,16 +145,68 @@ Caus *Caus::clone() const
 
 
 
-/********************   Init    ********************/
-Init::Init(Predicate *p1)
+/********************   CausCond    ********************/
+CausCond::CausCond(Action *p1, ListLiteral *p2, ListLiteral *p3)
 {
-  predicate_ = p1;
+  action_ = p1;
+  listliteral_1 = p2;
+  listliteral_2 = p3;
+
+}
+
+CausCond::CausCond(const CausCond & other)
+{
+  action_ = other.action_->clone();
+  listliteral_1 = other.listliteral_1->clone();
+  listliteral_2 = other.listliteral_2->clone();
+
+}
+
+CausCond &CausCond::operator=(const CausCond & other)
+{
+  CausCond tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void CausCond::swap(CausCond & other)
+{
+  std::swap(action_, other.action_);
+  std::swap(listliteral_1, other.listliteral_1);
+  std::swap(listliteral_2, other.listliteral_2);
+
+}
+
+CausCond::~CausCond()
+{
+  delete(action_);
+  delete(listliteral_1);
+  delete(listliteral_2);
+
+}
+
+void CausCond::accept(Visitor *v)
+{
+  v->visitCausCond(this);
+}
+
+CausCond *CausCond::clone() const
+{
+  return new CausCond(*this);
+}
+
+
+
+/********************   Init    ********************/
+Init::Init(Literal *p1)
+{
+  literal_ = p1;
 
 }
 
 Init::Init(const Init & other)
 {
-  predicate_ = other.predicate_->clone();
+  literal_ = other.literal_->clone();
 
 }
 
@@ -167,13 +219,13 @@ Init &Init::operator=(const Init & other)
 
 void Init::swap(Init & other)
 {
-  std::swap(predicate_, other.predicate_);
+  std::swap(literal_, other.literal_);
 
 }
 
 Init::~Init()
 {
-  delete(predicate_);
+  delete(literal_);
 
 }
 
@@ -185,6 +237,50 @@ void Init::accept(Visitor *v)
 Init *Init::clone() const
 {
   return new Init(*this);
+}
+
+
+
+/********************   Final    ********************/
+Final::Final(Literal *p1)
+{
+  literal_ = p1;
+
+}
+
+Final::Final(const Final & other)
+{
+  literal_ = other.literal_->clone();
+
+}
+
+Final &Final::operator=(const Final & other)
+{
+  Final tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void Final::swap(Final & other)
+{
+  std::swap(literal_, other.literal_);
+
+}
+
+Final::~Final()
+{
+  delete(literal_);
+
+}
+
+void Final::accept(Visitor *v)
+{
+  v->visitFinal(this);
+}
+
+Final *Final::clone() const
+{
+  return new Final(*this);
 }
 
 
@@ -279,18 +375,196 @@ Pred *Pred::clone() const
 
 
 
-
-/********************   ListPredicate    ********************/
-
-void ListPredicate::accept(Visitor *v)
+/********************   LitN    ********************/
+LitN::LitN(Predicate *p1)
 {
-  v->visitListPredicate(this);
+  predicate_ = p1;
+
+}
+
+LitN::LitN(const LitN & other)
+{
+  predicate_ = other.predicate_->clone();
+
+}
+
+LitN &LitN::operator=(const LitN & other)
+{
+  LitN tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void LitN::swap(LitN & other)
+{
+  std::swap(predicate_, other.predicate_);
+
+}
+
+LitN::~LitN()
+{
+  delete(predicate_);
+
+}
+
+void LitN::accept(Visitor *v)
+{
+  v->visitLitN(this);
+}
+
+LitN *LitN::clone() const
+{
+  return new LitN(*this);
 }
 
 
-ListPredicate *ListPredicate::clone() const
+
+/********************   Lit    ********************/
+Lit::Lit(Predicate *p1)
 {
-  return new ListPredicate(*this);
+  predicate_ = p1;
+
+}
+
+Lit::Lit(const Lit & other)
+{
+  predicate_ = other.predicate_->clone();
+
+}
+
+Lit &Lit::operator=(const Lit & other)
+{
+  Lit tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void Lit::swap(Lit & other)
+{
+  std::swap(predicate_, other.predicate_);
+
+}
+
+Lit::~Lit()
+{
+  delete(predicate_);
+
+}
+
+void Lit::accept(Visitor *v)
+{
+  v->visitLit(this);
+}
+
+Lit *Lit::clone() const
+{
+  return new Lit(*this);
+}
+
+
+
+/********************   Acts    ********************/
+Acts::Acts(Ident p1, ListIdent *p2)
+{
+  ident_ = p1;
+  listident_ = p2;
+
+}
+
+Acts::Acts(const Acts & other)
+{
+  ident_ = other.ident_;
+  listident_ = other.listident_->clone();
+
+}
+
+Acts &Acts::operator=(const Acts & other)
+{
+  Acts tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void Acts::swap(Acts & other)
+{
+  std::swap(ident_, other.ident_);
+  std::swap(listident_, other.listident_);
+
+}
+
+Acts::~Acts()
+{
+  delete(listident_);
+
+}
+
+void Acts::accept(Visitor *v)
+{
+  v->visitActs(this);
+}
+
+Acts *Acts::clone() const
+{
+  return new Acts(*this);
+}
+
+
+
+/********************   Act    ********************/
+Act::Act(Ident p1)
+{
+  ident_ = p1;
+
+}
+
+Act::Act(const Act & other)
+{
+  ident_ = other.ident_;
+
+}
+
+Act &Act::operator=(const Act & other)
+{
+  Act tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void Act::swap(Act & other)
+{
+  std::swap(ident_, other.ident_);
+
+}
+
+Act::~Act()
+{
+
+}
+
+void Act::accept(Visitor *v)
+{
+  v->visitAct(this);
+}
+
+Act *Act::clone() const
+{
+  return new Act(*this);
+}
+
+
+
+
+/********************   ListLiteral    ********************/
+
+void ListLiteral::accept(Visitor *v)
+{
+  v->visitListLiteral(this);
+}
+
+
+ListLiteral *ListLiteral::clone() const
+{
+  return new ListLiteral(*this);
 }
 
 

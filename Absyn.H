@@ -25,10 +25,12 @@ class Predicate;
 class Literal;
 class Action;
 class Prg;
+class Def;
 class Exec;
 class Caus;
 class CausCond;
 class Init;
+class Final;
 class Preds;
 class Pred;
 class LitN;
@@ -51,10 +53,12 @@ public:
   virtual void visitLiteral(Literal *p) = 0;
   virtual void visitAction(Action *p) = 0;
   virtual void visitPrg(Prg *p) = 0;
+  virtual void visitDef(Def *p) = 0;
   virtual void visitExec(Exec *p) = 0;
   virtual void visitCaus(Caus *p) = 0;
   virtual void visitCausCond(CausCond *p) = 0;
   virtual void visitInit(Init *p) = 0;
+  virtual void visitFinal(Final *p) = 0;
   virtual void visitPreds(Preds *p) = 0;
   virtual void visitPred(Pred *p) = 0;
   virtual void visitLitN(LitN *p) = 0;
@@ -136,6 +140,21 @@ public:
   void swap(Prg &);
 };
 
+class Def : public Decl
+{
+public:
+  Ident ident_1;
+  Ident ident_2;
+
+  Def(const Def &);
+  Def &operator=(const Def &);
+  Def(Ident p1, Ident p2);
+  ~Def();
+  virtual void accept(Visitor *v);
+  virtual Def *clone() const;
+  void swap(Def &);
+};
+
 class Exec : public Decl
 {
 public:
@@ -194,6 +213,20 @@ public:
   virtual void accept(Visitor *v);
   virtual Init *clone() const;
   void swap(Init &);
+};
+
+class Final : public Decl
+{
+public:
+  Literal *literal_;
+
+  Final(const Final &);
+  Final &operator=(const Final &);
+  Final(Literal *p1);
+  ~Final();
+  virtual void accept(Visitor *v);
+  virtual Final *clone() const;
+  void swap(Final &);
 };
 
 class Preds : public Predicate

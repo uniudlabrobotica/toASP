@@ -8,7 +8,9 @@
 class Program;
 class Decl;
 class Predicate;
-class ListPredicate;
+class Literal;
+class Action;
+class ListLiteral;
 class ListIdent;
 class ListDecl;
 
@@ -21,7 +23,9 @@ typedef union
   Program* program_;
   Decl* decl_;
   Predicate* predicate_;
-  ListPredicate* listpredicate_;
+  Literal* literal_;
+  Action* action_;
+  ListLiteral* listliteral_;
   ListIdent* listident_;
   ListDecl* listdecl_;
 } YYSTYPE;
@@ -40,7 +44,9 @@ Program* pProgram(const char *str);
 #define _SYMB_5 264
 #define _SYMB_6 265
 #define _SYMB_7 266
-#define _IDENT_ 267
+#define _SYMB_8 267
+#define _SYMB_9 268
+#define _IDENT_ 269
 
 extern YYSTYPE yylval;
 

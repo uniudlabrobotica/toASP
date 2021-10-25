@@ -125,8 +125,8 @@ Predicate* pPredicate(const char *str)
   }
 }
 
-static ListPredicate* YY_RESULT_ListPredicate_ = 0;
-ListPredicate* pListPredicate(FILE *inp)
+static Literal* YY_RESULT_Literal_ = 0;
+Literal* pLiteral(FILE *inp)
 {
   yy_mylinenumber = 1;
   initialize_lexer(inp);
@@ -136,10 +136,10 @@ ListPredicate* pListPredicate(FILE *inp)
   }
   else
   { /* Success */
-    return YY_RESULT_ListPredicate_;
+    return YY_RESULT_Literal_;
   }
 }
-ListPredicate* pListPredicate(const char *str)
+Literal* pLiteral(const char *str)
 {
   YY_BUFFER_STATE buf;
   int result;
@@ -154,7 +154,73 @@ ListPredicate* pListPredicate(const char *str)
   }
   else
   { /* Success */
-    return YY_RESULT_ListPredicate_;
+    return YY_RESULT_Literal_;
+  }
+}
+
+static Action* YY_RESULT_Action_ = 0;
+Action* pAction(FILE *inp)
+{
+  yy_mylinenumber = 1;
+  initialize_lexer(inp);
+  if (yyparse())
+  { /* Failure */
+    return 0;
+  }
+  else
+  { /* Success */
+    return YY_RESULT_Action_;
+  }
+}
+Action* pAction(const char *str)
+{
+  YY_BUFFER_STATE buf;
+  int result;
+  yy_mylinenumber = 1;
+  initialize_lexer(0);
+  buf = yy_scan_string(str);
+  result = yyparse();
+  yy_delete_buffer(buf);
+  if (result)
+  { /* Failure */
+    return 0;
+  }
+  else
+  { /* Success */
+    return YY_RESULT_Action_;
+  }
+}
+
+static ListLiteral* YY_RESULT_ListLiteral_ = 0;
+ListLiteral* pListLiteral(FILE *inp)
+{
+  yy_mylinenumber = 1;
+  initialize_lexer(inp);
+  if (yyparse())
+  { /* Failure */
+    return 0;
+  }
+  else
+  { /* Success */
+    return YY_RESULT_ListLiteral_;
+  }
+}
+ListLiteral* pListLiteral(const char *str)
+{
+  YY_BUFFER_STATE buf;
+  int result;
+  yy_mylinenumber = 1;
+  initialize_lexer(0);
+  buf = yy_scan_string(str);
+  result = yyparse();
+  yy_delete_buffer(buf);
+  if (result)
+  { /* Failure */
+    return 0;
+  }
+  else
+  { /* Success */
+    return YY_RESULT_ListLiteral_;
   }
 }
 
@@ -237,7 +303,9 @@ ListDecl* pListDecl(const char *str)
   Program* program_;
   Decl* decl_;
   Predicate* predicate_;
-  ListPredicate* listpredicate_;
+  Literal* literal_;
+  Action* action_;
+  ListLiteral* listliteral_;
   ListIdent* listident_;
   ListDecl* listdecl_;
 }
@@ -249,13 +317,17 @@ ListDecl* pListDecl(const char *str)
 %token _SYMB_3    //   .
 %token _SYMB_4    //   causes
 %token _SYMB_5    //   executable
-%token _SYMB_6    //   if
-%token _SYMB_7    //   initially
+%token _SYMB_6    //   finally
+%token _SYMB_7    //   if
+%token _SYMB_8    //   initially
+%token _SYMB_9    //   neg
 
 %type <program_> Program
 %type <decl_> Decl
 %type <predicate_> Predicate
-%type <listpredicate_> ListPredicate
+%type <literal_> Literal
+%type <action_> Action
+%type <listliteral_> ListLiteral
 %type <listident_> ListIdent
 %type <listdecl_> ListDecl
 
@@ -265,15 +337,23 @@ ListDecl* pListDecl(const char *str)
 %%
 Program : ListDecl {  std::reverse($1->begin(),$1->end()) ;$$ = new Prg($1); YY_RESULT_Program_= $$; } 
 ;
-Decl : _SYMB_5 Predicate _SYMB_6 ListPredicate {  std::reverse($4->begin(),$4->end()) ;$$ = new Exec($2, $4);  } 
-  | Predicate _SYMB_4 ListPredicate {  std::reverse($3->begin(),$3->end()) ;$$ = new Caus($1, $3);  }
-  | _SYMB_7 Predicate {  $$ = new Init($2);  }
+Decl : _SYMB_5 Action _SYMB_7 ListLiteral {  std::reverse($4->begin(),$4->end()) ;$$ = new Exec($2, $4);  } 
+  | Action _SYMB_4 ListLiteral {  std::reverse($3->begin(),$3->end()) ;$$ = new Caus($1, $3);  }
+  | Action _SYMB_4 ListLiteral _SYMB_7 ListLiteral {  std::reverse($3->begin(),$3->end()) ; std::reverse($5->begin(),$5->end()) ;$$ = new CausCond($1, $3, $5);  }
+  | _SYMB_8 Literal {  $$ = new Init($2);  }
+  | _SYMB_6 Literal {  $$ = new Final($2);  }
 ;
 Predicate : _IDENT_ _SYMB_0 ListIdent _SYMB_1 {  std::reverse($3->begin(),$3->end()) ;$$ = new Preds($1, $3);  } 
   | _IDENT_ {  $$ = new Pred($1);  }
 ;
-ListPredicate : Predicate {  $$ = new ListPredicate() ; $$->push_back($1);  } 
-  | Predicate _SYMB_2 ListPredicate {  $3->push_back($1) ; $$ = $3 ;  }
+Literal : _SYMB_9 Predicate {  $$ = new LitN($2);  } 
+  | Predicate {  $$ = new Lit($1);  }
+;
+Action : _IDENT_ _SYMB_0 ListIdent _SYMB_1 {  std::reverse($3->begin(),$3->end()) ;$$ = new Acts($1, $3);  } 
+  | _IDENT_ {  $$ = new Act($1);  }
+;
+ListLiteral : Literal {  $$ = new ListLiteral() ; $$->push_back($1);  } 
+  | Literal _SYMB_2 ListLiteral {  $3->push_back($1) ; $$ = $3 ;  }
 ;
 ListIdent : _IDENT_ {  $$ = new ListIdent() ; $$->push_back($1);  } 
   | _IDENT_ _SYMB_2 ListIdent {  $3->push_back($1) ; $$ = $3 ;  }

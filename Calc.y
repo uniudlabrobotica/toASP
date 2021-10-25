@@ -317,9 +317,12 @@ ListDecl* pListDecl(const char *str)
 %token _SYMB_3    //   .
 %token _SYMB_4    //   causes
 %token _SYMB_5    //   executable
-%token _SYMB_6    //   if
-%token _SYMB_7    //   initially
-%token _SYMB_8    //   neg
+%token _SYMB_6    //   finally
+%token _SYMB_7    //   if
+%token _SYMB_8    //   initially
+%token _SYMB_9    //   neg
+%token _SYMB_10    //   of
+%token _SYMB_11    //   type
 
 %type <program_> Program
 %type <decl_> Decl
@@ -336,15 +339,17 @@ ListDecl* pListDecl(const char *str)
 %%
 Program : ListDecl {  std::reverse($1->begin(),$1->end()) ;$$ = new Prg($1); YY_RESULT_Program_= $$; } 
 ;
-Decl : _SYMB_5 Action _SYMB_6 ListLiteral {  std::reverse($4->begin(),$4->end()) ;$$ = new Exec($2, $4);  } 
+Decl : _IDENT_ _SYMB_10 _SYMB_11 _IDENT_ {  $$ = new Def($1, $4);  } 
+  | _SYMB_5 Action _SYMB_7 ListLiteral {  std::reverse($4->begin(),$4->end()) ;$$ = new Exec($2, $4);  }
   | Action _SYMB_4 ListLiteral {  std::reverse($3->begin(),$3->end()) ;$$ = new Caus($1, $3);  }
-  | Action _SYMB_4 ListLiteral _SYMB_6 ListLiteral {  std::reverse($3->begin(),$3->end()) ; std::reverse($5->begin(),$5->end()) ;$$ = new CausCond($1, $3, $5);  }
-  | _SYMB_7 Literal {  $$ = new Init($2);  }
+  | Action _SYMB_4 ListLiteral _SYMB_7 ListLiteral {  std::reverse($3->begin(),$3->end()) ; std::reverse($5->begin(),$5->end()) ;$$ = new CausCond($1, $3, $5);  }
+  | _SYMB_8 Literal {  $$ = new Init($2);  }
+  | _SYMB_6 Literal {  $$ = new Final($2);  }
 ;
 Predicate : _IDENT_ _SYMB_0 ListIdent _SYMB_1 {  std::reverse($3->begin(),$3->end()) ;$$ = new Preds($1, $3);  } 
   | _IDENT_ {  $$ = new Pred($1);  }
 ;
-Literal : _SYMB_8 Predicate {  $$ = new LitN($2);  } 
+Literal : _SYMB_9 Predicate {  $$ = new LitN($2);  } 
   | Predicate {  $$ = new Lit($1);  }
 ;
 Action : _IDENT_ _SYMB_0 ListIdent _SYMB_1 {  std::reverse($3->begin(),$3->end()) ;$$ = new Acts($1, $3);  } 
